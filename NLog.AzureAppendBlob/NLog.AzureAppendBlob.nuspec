@@ -10,5 +10,6 @@
 		<projectUrl>https://github.com/heemskerkerik/NLog.AzureAppendBlob</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>An NLog target using Microsoft Azure Storage Append-only Blobs</description>
+		<tags>nlog azure blob cloud target</tags>
 	</metadata>
 </package>
