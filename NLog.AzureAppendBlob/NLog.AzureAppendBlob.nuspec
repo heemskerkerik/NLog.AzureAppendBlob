@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package >
+	<metadata>
+		<id>$id$</id>
+		<version>$version$</version>
+		<title>$title$</title>
+		<authors>heemskerkerik</authors>
+		<owners>heemskerkerik</owners>
+		<licenseUrl>https://raw.githubusercontent.com/heemskerkerik/NLog.AzureAppendBlob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/heemskerkerik/NLog.AzureAppendBlob</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>An NLog target using Microsoft Azure Storage Append-only Blobs</description>
+	</metadata>
+</package>
