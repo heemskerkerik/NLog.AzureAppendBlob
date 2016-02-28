@@ -20,6 +20,7 @@ namespace NLog.AzureAppendBlob
 		[RequiredParameter]
 		public Layout BlobName { get; set; }
 
+		private ConfigManager _configManager;
 		private CloudBlobClient _client;
 		private CloudBlobContainer _container;
 		private CloudAppendBlob _blob;
@@ -28,7 +29,9 @@ namespace NLog.AzureAppendBlob
 		{
 			base.InitializeTarget();
 
-			_client = CloudStorageAccount.Parse(ConnectionString)
+			_configManager = new ConfigManager(ConnectionString);
+
+			_client = CloudStorageAccount.Parse(_configManager.GetStorageAccountConnectionString())
 			                             .CreateCloudBlobClient();
 		}
 
