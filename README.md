@@ -22,7 +22,7 @@ The target's type name is ``AzureAppendBlob``.
     <target type="AzureAppendBlob" 
             name="Azure" 
             layout="${longdate} ${level:uppercase=true} - ${message}" 
-            connectionString="${appsettings:name=StorageConnectionString}" 
+            connectionString="${appsetting:name=StorageConnectionString}" 
             container="logtest" 
             blobName="${date:format=yyyy-MM-dd}.log" />
 
