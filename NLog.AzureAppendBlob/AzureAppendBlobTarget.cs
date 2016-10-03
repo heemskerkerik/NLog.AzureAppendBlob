@@ -5,6 +5,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using NLog.Config;
 using NLog.Layouts;
 using NLog.Targets;
+using NLog.Common;
 
 namespace NLog.AzureAppendBlob
 {
@@ -12,7 +13,7 @@ namespace NLog.AzureAppendBlob
 	public sealed class AzureAppendBlobTarget: TargetWithLayout
 	{
 		[RequiredParameter]
-		public string ConnectionString { get; set; }
+		public Layout ConnectionString { get; set; }
 
 		[RequiredParameter]
 		public Layout Container { get; set; }
@@ -23,20 +24,23 @@ namespace NLog.AzureAppendBlob
 		private CloudBlobClient _client;
 		private CloudBlobContainer _container;
 		private CloudAppendBlob _blob;
+		private string _connectionString;
 
 		protected override void InitializeTarget()
 		{
 			base.InitializeTarget();
 
-			_client = CloudStorageAccount.Parse(ConnectionString)
-			                             .CreateCloudBlobClient();
+			_client = null;
 		}
 
 		protected override void Write(LogEventInfo logEvent)
 		{
-			if (_client == null)
+			var connectionString = ConnectionString.Render(logEvent);
+
+			if (_client == null || !string.Equals(_connectionString, connectionString, System.StringComparison.OrdinalIgnoreCase))
 			{
-				return;
+				_client = CloudStorageAccount.Parse(connectionString).CreateCloudBlobClient();
+				InternalLogger.Debug("Initialized connection to {0}", connectionString);
 			}
 
 			string containerName = Container.Render(logEvent);
@@ -45,6 +49,13 @@ namespace NLog.AzureAppendBlob
 			if (_container == null || _container.Name != containerName)
 			{
 				_container = _client.GetContainerReference(containerName);
+				InternalLogger.Debug("Got container reference to {0}", containerName);
+
+				if(_container.CreateIfNotExists())
+				{
+					InternalLogger.Debug("Created container {0}", containerName);
+				}
+
 				_blob = null;
 			}
 
@@ -58,6 +69,7 @@ namespace NLog.AzureAppendBlob
 					{
 						_blob.Properties.ContentType = "text/plain";
 						_blob.CreateOrReplace(AccessCondition.GenerateIfNotExistsCondition());
+						InternalLogger.Debug("Created blob: {0}", blobName);
 					}
 					catch (StorageException ex) when (ex.RequestInformation.HttpStatusCode == (int) HttpStatusCode.Conflict)
 					{

@@ -13,7 +13,7 @@ Install the [NLog.AzureAppendBlob](https://www.nuget.org/packages/NLog.AzureAppe
 ### Target configuration ###
 The target's type name is ``AzureAppendBlob``.
 
-* **connectionString** - The connection string for the storage account to use. Consult the Azure Portal to retrieve this.
+* **connectionString** - (layout) The connection string for the storage account to use. Consult the Azure Portal to retrieve this.
 * **container** - (layout) The name of the blob container where logs will be placed. Must exist.
 * **blobName** - (layout) Name of the blob to write to. Will be created when it does not exist.
 * **layout** - (layout) Text to write.
@@ -22,7 +22,7 @@ The target's type name is ``AzureAppendBlob``.
     <target type="AzureAppendBlob" 
             name="Azure" 
             layout="${longdate} ${level:uppercase=true} - ${message}" 
-            connectionString="UseDevelopmentStorage=true;" 
+            connectionString="${appsetting:name=StorageConnectionString}" 
             container="logtest" 
             blobName="${date:format=yyyy-MM-dd}.log" />
 
